@@ -4,7 +4,7 @@
 **/node_modules/
 /videos/*.json
 /videos/*.ts
-/videos/*.m4s
+/videos/*.mp4
 /videos/*.txt
 .DS_Store
 ffmpeg

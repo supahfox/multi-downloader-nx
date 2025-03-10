@@ -1687,7 +1687,7 @@ export default class Crunchy implements ServiceClass {
                 segments: chosenVideoSegments.segments
               };
               const videoDownload = await new streamdl({
-                output: chosenVideoSegments.pssh_wvd || chosenVideoSegments.pssh_prd ? `${tempTsFile}.video.enc.m4s` : `${tsFile}.video.m4s`,
+                output: chosenVideoSegments.pssh_wvd || chosenVideoSegments.pssh_prd ? `${tempTsFile}.video.enc.mp4` : `${tsFile}.video.mp4`,
                 timeout: options.timeout,
                 m3u8json: videoJson,
                 // baseurl: chunkPlaylist.baseUrl,
@@ -1727,7 +1727,7 @@ export default class Crunchy implements ServiceClass {
                 segments: chosenAudioSegments.segments
               };
               const audioDownload = await new streamdl({
-                output: chosenVideoSegments.pssh_wvd || chosenVideoSegments.pssh_prd ? `${tempTsFile}.audio.enc.m4s` : `${tsFile}.audio.m4s`,
+                output: chosenVideoSegments.pssh_wvd || chosenVideoSegments.pssh_prd ? `${tempTsFile}.audio.enc.mp4` : `${tsFile}.audio.mp4`,
                 timeout: options.timeout,
                 m3u8json: audioJson,
                 // baseurl: chunkPlaylist.baseUrl,
@@ -1805,13 +1805,13 @@ export default class Crunchy implements ServiceClass {
 
               if (this.cfg.bin.mp4decrypt || this.cfg.bin.shaka) {
                 let commandBase = `--show-progress --key ${encryptionKeys[cdm === 'playready' ? 0 : 1].kid}:${encryptionKeys[cdm === 'playready' ? 0 : 1].key} `;
-                let commandVideo = commandBase+`"${tempTsFile}.video.enc.m4s" "${tempTsFile}.video.m4s"`;
-                let commandAudio = commandBase+`"${tempTsFile}.audio.enc.m4s" "${tempTsFile}.audio.m4s"`;
+                let commandVideo = commandBase+`"${tempTsFile}.video.enc.mp4" "${tempTsFile}.video.mp4"`;
+                let commandAudio = commandBase+`"${tempTsFile}.audio.enc.mp4" "${tempTsFile}.audio.mp4"`;
 
                 if (this.cfg.bin.shaka) {
                   commandBase = ` --enable_raw_key_decryption ${encryptionKeys.map(kb => '--keys key_id='+kb.kid+':key='+kb.key).join(' ')}`;
-                  commandVideo = `input="${tempTsFile}.video.enc.m4s",stream=video,output="${tempTsFile}.video.m4s"`+commandBase;
-                  commandAudio = `input="${tempTsFile}.audio.enc.m4s",stream=audio,output="${tempTsFile}.audio.m4s"`+commandBase;
+                  commandVideo = `input="${tempTsFile}.video.enc.mp4",stream=video,output="${tempTsFile}.video.mp4"`+commandBase;
+                  commandAudio = `input="${tempTsFile}.audio.enc.mp4",stream=audio,output="${tempTsFile}.audio.mp4"`+commandBase;
                 }
 
                 if (videoDownloaded) {
@@ -1820,18 +1820,18 @@ export default class Crunchy implements ServiceClass {
                   if (!decryptVideo.isOk) {
                     console.error(decryptVideo.err);
                     console.error(`Decryption failed with exit code ${decryptVideo.err.code}`);
-                    fs.renameSync(`${tempTsFile}.video.enc.m4s`, `${tsFile}.video.enc.m4s`);
+                    fs.renameSync(`${tempTsFile}.video.enc.mp4`, `${tsFile}.video.enc.mp4`);
                     return undefined;
                   } else {
                     console.info('Decryption done for video');
                     if (!options.nocleanup) {
-                      fs.removeSync(`${tempTsFile}.video.enc.m4s`);
+                      fs.removeSync(`${tempTsFile}.video.enc.mp4`);
                     }
-                    fs.copyFileSync(`${tempTsFile}.video.m4s`, `${tsFile}.video.m4s`);
-                    fs.unlinkSync(`${tempTsFile}.video.m4s`);
+                    fs.copyFileSync(`${tempTsFile}.video.mp4`, `${tsFile}.video.mp4`);
+                    fs.unlinkSync(`${tempTsFile}.video.mp4`);
                     files.push({
                       type: 'Video',
-                      path: `${tsFile}.video.m4s`,
+                      path: `${tsFile}.video.mp4`,
                       lang: lang,
                       isPrimary: isPrimary
                     });
@@ -1844,17 +1844,17 @@ export default class Crunchy implements ServiceClass {
                   if (!decryptAudio.isOk) {
                     console.error(decryptAudio.err);
                     console.error(`Decryption failed with exit code ${decryptAudio.err.code}`);
-                    fs.renameSync(`${tempTsFile}.audio.enc.m4s`, `${tsFile}.audio.enc.m4s`);
+                    fs.renameSync(`${tempTsFile}.audio.enc.mp4`, `${tsFile}.audio.enc.mp4`);
                     return undefined;
                   } else {
                     if (!options.nocleanup) {
-                      fs.removeSync(`${tempTsFile}.audio.enc.m4s`);
+                      fs.removeSync(`${tempTsFile}.audio.enc.mp4`);
                     }
-                    fs.copyFileSync(`${tempTsFile}.audio.m4s`, `${tsFile}.audio.m4s`);
-                    fs.unlinkSync(`${tempTsFile}.audio.m4s`);
+                    fs.copyFileSync(`${tempTsFile}.audio.mp4`, `${tsFile}.audio.mp4`);
+                    fs.unlinkSync(`${tempTsFile}.audio.mp4`);
                     files.push({
                       type: 'Audio',
-                      path: `${tsFile}.audio.m4s`,
+                      path: `${tsFile}.audio.mp4`,
                       lang: lang,
                       isPrimary: isPrimary
                     });
@@ -1868,7 +1868,7 @@ export default class Crunchy implements ServiceClass {
               if (videoDownloaded) {
                 files.push({
                   type: 'Video',
-                  path: `${tsFile}.video.m4s`,
+                  path: `${tsFile}.video.mp4`,
                   lang: lang,
                   isPrimary: isPrimary
                 });
@@ -1876,7 +1876,7 @@ export default class Crunchy implements ServiceClass {
               if (audioDownloaded) {
                 files.push({
                   type: 'Audio',
-                  path: `${tsFile}.audio.m4s`,
+                  path: `${tsFile}.audio.mp4`,
                   lang: lang,
                   isPrimary: isPrimary
                 });
